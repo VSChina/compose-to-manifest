@@ -292,7 +292,7 @@ def main():
     parser.add_argument("-r", "--registry", type=str, help="Container registry address", required=False)
     args = parser.parse_args()
     if not args.registry:
-        args.registry = "http://localhost:5000"
+        args.registry = "localhost:5000"
     convert(args.input, args.registry)
 
 
