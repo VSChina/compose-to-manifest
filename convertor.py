@@ -283,7 +283,7 @@ def convert(compose_file_name: str, cr: str):
     with open(str(env_file), "w", encoding="utf8") as fp:
         fp.write("CONTAINER_REGISTRY_USERNAME=\n")
         fp.write("CONTAINER_REGISTRY_PASSWORD=\n")
-        fp.write("CONTAINER_REGISTRY_ADDRESS=\n")
+        fp.write("CONTAINER_REGISTRY_ADDRESS={}\n".format(cr))
 
 
 def main():
