@@ -21,9 +21,9 @@ template = {
             "loggingOptions": "",
             "registryCredentials": {
               "REGISTRY0": {
-                "username": "$CONTAINER_REGISTRY_USERNAME",
-                "password": "$CONTAINER_REGISTRY_PASSWORD",
-                "address": "$CONTAINER_REGISTRY_ADDRESS"
+                "username": "${CONTAINER_REGISTRY_USERNAME}",
+                "password": "${CONTAINER_REGISTRY_PASSWORD}",
+                "address": "${CONTAINER_REGISTRY_ADDRESS}"
               }
             }
           }
