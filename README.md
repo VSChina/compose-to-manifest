@@ -5,6 +5,7 @@ Convert Docker Compose project to Azure IoT Edge deployment manifest
 ```bash
 git clone https://github.com/VSChina/compose-to-manifest --recursive
 cd compose-to-manifest
+git checkout single_file
 pip3 install -r compose/requirements.txt
 ```
 
