@@ -182,7 +182,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
     return modules
 
 
-def convert(compose_file_name: str, cr: str):
+def convert(compose_file_name: str, output_file: str, cr: str):
     options = {
         '--compatibility': False,
         '--env-file': None,
@@ -207,93 +207,22 @@ def convert(compose_file_name: str, cr: str):
     }
     project = project_from_options(".", options)
 
-    path_of_compose_file = Path(compose_file_name).absolute().resolve()
-    project_name = path_of_compose_file.parts[-2]
-    root = path_of_compose_file.parent.parent
-    edge_solution = root.joinpath(project_name + "-edge")
-    edge_solution.mkdir()
-    modules_dir = edge_solution.joinpath("modules")
-    modules_dir.mkdir()
-
-    # create module.json
-    for name in project.service_names:
-        service = project.get_service(name)
-        build_opt = service.options.get("build", {})
-        # make module directory
-        if "context" in build_opt:
-            shutil.copytree(build_opt["context"], str(modules_dir.joinpath(name)))
-
-        buildOptions = []
-        dockerfile = "Dockerfile"
-        if "dockerfile" in build_opt:
-            dockerfile = build_opt["dockerfile"]
-        if "args" in build_opt and build_opt["args"]:
-            if isinstance(build_opt["args"], dict):
-                for arg in build_opt["args"]:
-                    buildOptions.append("--build-arg {}={}".format(arg, build_opt["args"][arg]))
-            elif isinstance(build_opt["args"], list):
-                for arg in build_opt["args"]:
-                    buildOptions.append("--build-arg {}".format(arg))
-        if "cache_from" in build_opt:
-            for item in build_opt["cache_from"]:
-                buildOptions.append("--cache-from {}".format(item))
-        if "labels" in build_opt:
-            if isinstance(build_opt["labels"], dict):
-                for item in build_opt["labels"]:
-                    buildOptions.append("--label {}={}".format(item, build_opt["labels"][item]))
-            elif isinstance(build_opt["labels"], list):
-                for item in build_opt["labels"]:
-                    buildOptions.append("--label {}".format(item))
-        if "shm_size" in build_opt:
-            buildOptions.append("--shm-size {}".format(build_opt["shm_size"]))
-
-        if "target" in build_opt:
-            buildOptions.append("--target {}".format(build_opt["target"]))
-
-        module_json_template = {
-            "$schema-version": "0.0.1",
-            "description": "",
-            "image": {
-                "repository": "{}/{}".format(cr, name),
-                "tag": {
-                    "version": "0.0.1",
-                    "platforms": {
-                        "amd64": dockerfile,
-                    }
-                },
-                "buildOptions": buildOptions,
-                "contextPath": "./"
-            }
-        }
-        if build_opt:
-            module_json_path = modules_dir.joinpath(name).joinpath("module.json")
-            with open(str(module_json_path), "w", encoding="utf8") as fp:
-                fp.write(json.dumps(module_json_template, indent=4))
-                fp.write("\n")
-
     # create deployment.template.json
     modules = get_module_options(compose_file_name)
     template["modulesContent"]["$edgeAgent"]["properties.desired"]["modules"] = modules
-    deployment_file = edge_solution.joinpath("deployment.template.json")
-    with open(str(deployment_file), "w") as fp:
+
+    with open(output_file, "w") as fp:
         fp.write(json.dumps(template, indent=2))
-
-    # create .env
-    env_file = edge_solution.joinpath(".env")
-    with open(str(env_file), "w", encoding="utf8") as fp:
-        fp.write("CONTAINER_REGISTRY_USERNAME=\n")
-        fp.write("CONTAINER_REGISTRY_PASSWORD=\n")
-        fp.write("CONTAINER_REGISTRY_ADDRESS={}\n".format(cr))
-
 
 def main():
     parser = argparse.ArgumentParser(description="Compose to manifest")
     parser.add_argument("-i", "--input", type=str, help="Input compose file path", required=True)
+    parser.add_argument("-o", "--output", type=str, help="Output manifest file path", required=True)
     parser.add_argument("-r", "--registry", type=str, help="Container registry address", required=False)
     args = parser.parse_args()
     if not args.registry:
         args.registry = "localhost:5000"
-    convert(args.input, args.registry)
+    convert(args.input, args.output, args.registry)
 
 
 if __name__ == "__main__":
