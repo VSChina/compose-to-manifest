@@ -1,5 +1,5 @@
 # compose-to-manifest
-Convert Docker Compose project to Azure IoT Edge deployment manifest
+Convert Docker Compose project to Azure IoT Edge deployment manifest.
 
 ## Installation
 ```bash
@@ -15,6 +15,7 @@ python3 convertor.py [-h] -i docker_compose_file_path -o output_file_path [-r yo
 ```
 
 ## Example
+Make sure docker is running on your system.  
 In compose-to-manifest folder
 ```
 python3 convertor.py -i example/flask-redis/docker-compose.yml -o deployment.template.json
