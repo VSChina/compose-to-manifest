@@ -4,9 +4,11 @@ from pathlib import Path
 from docker.api.container import ContainerConfig
 import json
 import argparse
+import logging
 sys.path.insert(0, str(Path(__file__).parent.joinpath("./compose")))
 from compose.cli.command import project_from_options
 
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 template = {
   "$schema-template": "2.0.0",
@@ -145,15 +147,21 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
         for k in delete_list:
             del api_config["HostConfig"][k]
 
+        has_network_config = False
         try:
             del api_config["HostConfig"]["NetworkMode"]
+            has_network_config = True
         except KeyError:
             pass
 
         try:
             del api_config["NetworkingConfig"]
+            has_network_config = True
         except KeyError:
             pass
+        if has_network_config:
+            logging.warning("In service {}: Edge runtime doesn't support network configuration, "
+                            "delete related fields".format(name))
 
         restart_policy = "always"
         try:
@@ -168,6 +176,9 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
         del api_config["Image"]
         if build_opt:
             image = "${{MODULES.{}}}".format(name)
+
+        if len(json.dumps(api_config)) >= 4 * 1024:
+            logging.warning("In service {}: The length of createOptions is limited to 4096".format(name))
 
         modules[name] = {
             "version": "1.0",
