@@ -145,6 +145,16 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
         for k in delete_list:
             del api_config["HostConfig"][k]
 
+        if service.network_mode.network_mode == project.name + "_default":
+            try:
+                del api_config["HostConfig"]["NetworkMode"]
+            except KeyError:
+                pass
+            try:
+                del api_config["NetworkingConfig"]
+            except KeyError:
+                pass
+
         restart_policy = "always"
         try:
             restart_policy = api_config["HostConfig"]["RestartPolicy"]["Name"]
