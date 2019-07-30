@@ -129,43 +129,43 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
                 if key in ["detach", "stdin_open", "tty"]:
                     params[key] = False
 
-        api_config = ContainerConfig(project.config_version.vstring, **params)
+        create_options = ContainerConfig(project.config_version.vstring, **params)
 
         delete_list = []
-        for k, v in api_config.items():
+        for k, v in create_options.items():
             if not v:
                 delete_list.append(k)
         for k in delete_list:
-            del api_config[k]
+            del create_options[k]
 
         delete_list = []
-        for k, v in api_config["HostConfig"].items():
+        for k, v in create_options["HostConfig"].items():
             if not v:
                 delete_list.append(k)
         for k in delete_list:
-            del api_config["HostConfig"][k]
+            del create_options["HostConfig"][k]
 
         if service.network_mode.network_mode == project.name + "_default":
             try:
-                del api_config["HostConfig"]["NetworkMode"]
+                del create_options["HostConfig"]["NetworkMode"]
             except KeyError:
                 pass
             try:
-                del api_config["NetworkingConfig"]
+                del create_options["NetworkingConfig"]
             except KeyError:
                 pass
 
         restart_policy = "always"
         try:
-            restart_policy = api_config["HostConfig"]["RestartPolicy"]["Name"]
+            restart_policy = create_options["HostConfig"]["RestartPolicy"]["Name"]
             if restart_policy == "no":
                 restart_policy = "never"
         except KeyError:
             pass
 
         build_opt = service.options.get("build", {})
-        image = api_config["Image"]
-        del api_config["Image"]
+        image = create_options["Image"]
+        del create_options["Image"]
         if build_opt:
             image = "${{MODULES.{}}}".format(name)
 
@@ -176,7 +176,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
             "restartPolicy": restart_policy,
             "settings": {
                 "image": image,
-                "createOptions": api_config
+                "createOptions": create_options
             }
         }
     return modules
