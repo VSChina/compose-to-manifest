@@ -85,6 +85,7 @@ template = {
 
 
 def get_module_options(compose_file_name: str, debug=False) -> dict:
+    project_dir = Path(compose_file_name).absolute().resolve().parent
     options = {
         '--compatibility': False,
         '--env-file': None,
@@ -93,7 +94,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
         '--host': None,
         '--log-level': None,
         '--no-ansi': False,
-        '--project-directory': None,
+        '--project-directory': project_dir,
         '--project-name': None,
         '--skip-hostname-check': False,
         '--tls': False,
@@ -183,6 +184,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
 
 
 def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str):
+    project_dir = Path(compose_file_name).absolute().resolve().parent
     options = {
         '--compatibility': False,
         '--env-file': None,
@@ -191,7 +193,7 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
         '--host': None,
         '--log-level': None,
         '--no-ansi': False,
-        '--project-directory': None,
+        '--project-directory': project_dir,
         '--project-name': None,
         '--skip-hostname-check': False,
         '--tls': False,
