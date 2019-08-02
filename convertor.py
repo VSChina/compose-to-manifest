@@ -215,9 +215,10 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
     template["modulesContent"]["$edgeAgent"]["properties.desired"]["modules"] = modules
 
     if convert_type == "file":
-        # only create deployment.template.json
+        # only create deployment manifest
         with open(str(output_path), "w") as fp:
             fp.write(json.dumps(template, indent=2))
+        template_to_manifest(output_path, output_path)
 
     if convert_type == "project":
         if not output_path.is_dir():
@@ -291,6 +292,25 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
                 fp.write("CONTAINER_REGISTRY_USERNAME=\n")
                 fp.write("CONTAINER_REGISTRY_PASSWORD=\n")
                 fp.write("CONTAINER_REGISTRY_ADDRESS={}\n".format(cr))
+
+
+def template_to_manifest(input: str, output: str):
+    with open(input, "r", encoding="utf8") as fp:
+        j = json.load(fp)
+        try:
+            del j["$schema-template"]
+        except KeyError:
+            pass
+        system_modules = j["modulesContent"]["$edgeAgent"]["properties.desired"]["systemModules"]
+        for k, module in system_modules.items():
+            module["settings"]["createOptions"] = json.dumps(module["settings"]["createOptions"])
+        user_modules = j["modulesContent"]["$edgeAgent"]["properties.desired"]["modules"]
+        for k, module in user_modules.items():
+            if module["settings"]["image"].startswith("$"):
+                module["settings"]["image"] = ""
+            module["settings"]["createOptions"] = json.dumps(module["settings"]["createOptions"])
+        with open(output, "w", encoding="utf8") as fp:
+            fp.write(json.dumps(j, indent=2))
 
 
 def main():
