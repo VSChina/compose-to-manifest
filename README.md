@@ -7,6 +7,7 @@ git clone https://github.com/VSChina/compose-to-manifest --recursive
 cd compose-to-manifest
 pip3 install -r compose/requirements.txt
 ```
+Make sure docker is running on your system before using this tool.
 
 ## Usage
 ```
