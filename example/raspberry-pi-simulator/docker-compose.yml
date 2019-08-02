@@ -1,0 +1,9 @@
+version: '3.7'
+services:
+  web:
+    build:
+      context: ./web
+    ports:
+      - "80:80"
+  mongo:
+    image: mongo

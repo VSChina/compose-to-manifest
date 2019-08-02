@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Raspberry Pi Simulator</title>
+        <style>
+            .column {
+                float: left;
+                width: 50%;
+            }
+
+            .row:after {
+                content: "";
+                display: table;
+                clear: both;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="row">
+            <div class="column">
+                <img id="rasp" src="static/img/turnOff.png" style="width:100%">
+            </div>
+            <div class="column">
+                <div id="monitor" style="margin:50px;"></div>
+            </div>
+        </div>
+        <button type="button" onclick="start()">Start monitoring</button>
+    </body>
+    <script>
+        function httpGet(theUrl) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.open( "GET", theUrl, false ); // false for synchronous request
+            xmlHttp.send( null );
+            return xmlHttp.responseText;
+        }
+
+        function update() {
+            var obj = JSON.parse(httpGet("/latest"));
+            var rasp = document.getElementById("rasp");
+            var text = "";
+            if (obj["temperature"] > 25) {
+                rasp.src = "static/img/turnOn.png";
+                text = ", too hot!";
+            }
+            else {
+                rasp.src = "static/img/turnOff.png";
+            }
+            var monitor = document.getElementById("monitor");
+            if (monitor.childElementCount > 10) {
+                while (monitor.firstChild) {
+                    monitor.removeChild(monitor.firstChild);
+                }
+            }
+            var node = document.createElement("p");
+            node.textContent = "["  + obj["datetime"] + "]" + " Current temperature: " + obj["temperature"] + "℃" + text;
+            monitor.appendChild(node);
+        }
+
+        function start() {
+            setInterval(update, 500);
+        }
+    </script>
+    <script src="static/jquery-3.4.1.min.js"></script> 
+</html>
