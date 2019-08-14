@@ -309,10 +309,7 @@ def template_to_manifest(input: str, output: str):
         if n > limit:
             raise ValueError("createOptions too long, exceed {} bytes".format(limit))
         for i in range(0, n, block_size):
-            suffix = ""
-            if i:
-                suffix = "" \
-                         "{:02}".format(i // block_size)
+            suffix = "{:02}".format(i // block_size) if i else ""
             target["createOptions" + suffix] = create_option_string[i:min(i + block_size, n)]
 
     with open(input, "r", encoding="utf8") as fp:
