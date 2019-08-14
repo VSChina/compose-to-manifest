@@ -11,15 +11,16 @@ Make sure docker is running on your system before using this tool.
 
 ## Usage
 ```
-python3 convertor.py [-h] -i docker_compose_file_path [-r your_docker_container_registry_address]
+python3 convertor.py [-h] -t [file|project] -i docker_compose_file_path -o output_path [-r your_docker_container_registry_address]
 ```
 
 ## Example
-In compose-to-manifest folder
-```
-python3 convertor.py -i example/flask-redis/docker-compose.yml
-```
-
-This command will generate a folder `example/flask-redis-edge`, you can set registry username, 
-password, address in `.env` file
-
+In compose-to-manifest folder  
+1. Convert single file
+    ```bash
+    python3 convertor.py -t file -i example/flask-redis/docker-compose.yml -o example/flask-redis/deployment.template.json
+    ```
+2. Convert project
+    ```bash
+    python3 convertor.py -t project -i example/flask-redis/docker-compose.yml -o example/flask-redis-edge
+    ```
