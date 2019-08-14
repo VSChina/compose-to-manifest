@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 from docker.api.container import ContainerConfig
 import json
+import yaml
 import argparse
 sys.path.insert(0, str(Path(__file__).parent.joinpath("./compose")))
 from compose.cli.command import project_from_options
@@ -213,6 +214,11 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
 
     modules = get_module_options(compose_file_name)
     template["modulesContent"]["$edgeAgent"]["properties.desired"]["modules"] = modules
+    with open(compose_file_name, "r") as fp:
+        config = yaml.load(fp)
+        if "x-iotedge" in config and "routes" in config["x-iotedge"]:
+            template["modulesContent"]["$edgeHub"]["properties.desired"]["routes"] = config["x-iotedge"]["routes"]
+
 
     if convert_type == "file":
         # only create deployment manifest
