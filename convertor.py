@@ -301,6 +301,20 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
 
 
 def template_to_manifest(input: str, output: str):
+    def fillCreateOptions(target: dict, options: dict):
+        create_option_string = json.dumps(options)
+        block_size = 512
+        n = len(create_option_string)
+        limit = 512 * 8
+        if n > limit:
+            raise ValueError("createOptions too long, exceed {} bytes".format(limit))
+        for i in range(0, n, block_size):
+            suffix = ""
+            if i:
+                suffix = "" \
+                         "{:02}".format(i // block_size)
+            target["createOptions" + suffix] = create_option_string[i:min(i + block_size, n)]
+
     with open(input, "r", encoding="utf8") as fp:
         j = json.load(fp)
         try:
@@ -309,12 +323,12 @@ def template_to_manifest(input: str, output: str):
             pass
         system_modules = j["modulesContent"]["$edgeAgent"]["properties.desired"]["systemModules"]
         for k, module in system_modules.items():
-            module["settings"]["createOptions"] = json.dumps(module["settings"]["createOptions"])
+            fillCreateOptions(module["settings"], module["settings"]["createOptions"])
         user_modules = j["modulesContent"]["$edgeAgent"]["properties.desired"]["modules"]
         for k, module in user_modules.items():
             if module["settings"]["image"].startswith("$"):
                 module["settings"]["image"] = ""
-            module["settings"]["createOptions"] = json.dumps(module["settings"]["createOptions"])
+            fillCreateOptions(module["settings"], module["settings"]["createOptions"])
         with open(output, "w", encoding="utf8") as fp:
             fp.write(json.dumps(j, indent=2))
 
