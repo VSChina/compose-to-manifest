@@ -1,0 +1,1 @@
+name = "compose-to-manifest"
