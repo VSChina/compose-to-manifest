@@ -15,7 +15,6 @@ setuptools.setup(
     packages=setuptools.find_packages(),
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Azure :: IoT :: Edge"
     ],
     entry_points={
         "console_scripts": ["compose-to-manifest=convertor.convertor:main"],
