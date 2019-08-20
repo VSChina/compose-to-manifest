@@ -1,4 +1,0 @@
-[submodule "compose"]
-	path = compose
-	url = https://github.com/docker/compose
-	branch = v1.24.0
