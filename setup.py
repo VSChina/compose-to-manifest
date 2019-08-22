@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="compose-to-manifest",
-    version="0.0.1",
+    version="0.0.6",
     author="typeli",
     author_email="juncli@outlook.com",
     description="Convert Docker Compose project to Azure IoT Edge deployment manifest",
