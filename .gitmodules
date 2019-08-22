@@ -1,3 +1,0 @@
-[submodule "convertor/compose"]
-	path = convertor/compose
-	url = https://github.com/docker/compose

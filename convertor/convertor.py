@@ -5,7 +5,6 @@ from docker.api.container import ContainerConfig
 import json
 import yaml
 import argparse
-sys.path.insert(0, str(Path(__file__).parent.joinpath("./compose")))
 from compose.cli.command import project_from_options
 
 
