@@ -13,6 +13,7 @@ setuptools.setup(
     long_description_content_type="text/markdown",
     url="https://https://github.com/VSChina/compose-to-manifest",
     packages=setuptools.find_packages(),
+    python_requires='>=3.6.0',
     classifiers=[
         "Programming Language :: Python :: 3",
     ],
