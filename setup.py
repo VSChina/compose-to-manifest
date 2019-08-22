@@ -18,5 +18,18 @@ setuptools.setup(
     ],
     entry_points={
         "console_scripts": ["compose-to-manifest=convertor.convertor:main"],
-    }
+    },
+    install_requires=[
+        "docker-compose",
+    ],
 )
+
+# python setup.py sdist bdist_wheel
+
+# test
+# python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+# python3.6 -m pip install --user --index-url https://test.pypi.org/simple/  compose-to-manifest --upgrade
+
+# upload to pypi
+# python -m twine upload dist/*
+# python3.6 -m pip install compose-to-manifest
