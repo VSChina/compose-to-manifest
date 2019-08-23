@@ -6,18 +6,19 @@ Convert Docker Compose project to Azure IoT Edge deployment manifest.
 2. Python version >= `3.6.0`.
 ## Installation
 ```bash
-pip install compose-to-manifest
+pip3 install compose-to-manifest
 ```
 
 
 ## Usage
 ```
-python3 convertor.py [-h] -t [file|project] -i docker_compose_file_path -o output_path [-r your_docker_container_registry_address]
+compose-to-manifest [-h] -t [file|project] -i docker_compose_file_path -o output_path [-r your_docker_container_registry_address]
 ```
 
 ## Examples
 ```bash
 git clone https://github.com/VSChina/compose-to-manifest
+cd compose-to-manifest
 ```
 In compose-to-manifest folder  
 1. Convert single file
