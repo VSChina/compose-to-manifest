@@ -21,7 +21,7 @@ setuptools.setup(
         "console_scripts": ["compose-to-manifest=convertor.convertor:main"],
     },
     install_requires=[
-        "docker-compose",
+        "docker-compose==1.24.0",
     ],
 )
 
