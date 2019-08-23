@@ -5,13 +5,13 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="compose-to-manifest",
-    version="0.0.6",
+    version="0.0.8",
     author="typeli",
     author_email="juncli@outlook.com",
     description="Convert Docker Compose project to Azure IoT Edge deployment manifest",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://https://github.com/VSChina/compose-to-manifest",
+    url="https://github.com/VSChina/compose-to-manifest",
     packages=setuptools.find_packages(),
     python_requires='>=3.6.0',
     classifiers=[
