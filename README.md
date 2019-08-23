@@ -23,9 +23,13 @@ cd compose-to-manifest
 In compose-to-manifest folder  
 1. Convert single file
     ```bash
-    compose-to-manifest -t file -i example/flask-redis/docker-compose.yml -o example/flask-redis/deployment.template.json
+    compose-to-manifest -t file \
+    -i example/flask-redis/docker-compose.yml \
+    -o example/flask-redis/deployment.template.json
     ```
 2. Convert project
     ```bash
-    compose-to-manifest -t project -i example/flask-redis/docker-compose.yml -o example/flask-redis-edge
+    compose-to-manifest -t project \
+    -i example/flask-redis/docker-compose.yml \
+    -o example/flask-redis-edge
     ```
