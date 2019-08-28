@@ -24,13 +24,3 @@ setuptools.setup(
         "docker-compose==1.24.0",
     ],
 )
-
-# python setup.py sdist bdist_wheel
-
-# test
-# python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-# python3.6 -m pip install --user --index-url https://test.pypi.org/simple/  compose-to-manifest --upgrade
-
-# upload to pypi
-# python -m twine upload dist/*
-# python3.6 -m pip install compose-to-manifest
