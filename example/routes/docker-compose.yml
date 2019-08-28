@@ -1,0 +1,9 @@
+ version: '3.7'
+ services:
+   python:
+     image: python:3
+
+ x-iotedge:
+   routes:
+     SampleModuleToIoTHub: "FROM /messages/modules/SampleModule/outputs/* INTO $upstream"
+     sensorToSampleModule: "FROM /messages/modules/tempSensor/outputs/temperatureOutput INTO BrokeredEndpoint(\"/modules/SampleModule/inputs/input1\")"
