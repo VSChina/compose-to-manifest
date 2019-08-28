@@ -120,7 +120,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
             "stop_signal", "networking_config", "healthcheck", "stop_timeout", "runtime"
         ]
 
-        # if keys not exist, set default
+        # if keys not exist, set default, required by function ContainerConfig
         params = {}
         for key in keys:
             if key in create_option:
@@ -132,6 +132,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
 
         create_options = ContainerConfig(project.config_version.vstring, **params)
 
+        # delete empty fields
         delete_list = []
         for k, v in create_options.items():
             if not v:
@@ -164,6 +165,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
         except KeyError:
             pass
 
+        # set folder reference if build option in compose file
         build_opt = service.options.get("build", {})
         image = create_options["Image"]
         del create_options["Image"]
@@ -213,6 +215,8 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
 
     modules = get_module_options(compose_file_name)
     template["modulesContent"]["$edgeAgent"]["properties.desired"]["modules"] = modules
+
+    # process extension fields
     with open(compose_file_name, "r") as fp:
         config = yaml.load(fp)
         if "x-iotedge" in config and "routes" in config["x-iotedge"]:
@@ -226,6 +230,7 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
         template_to_manifest(output_path, output_path)
 
     if convert_type == "project":
+        # need some file copy operation if convert type is project
         if not output_path.is_dir():
             output_path.mkdir()
         modules_dir = output_path.joinpath("modules")
@@ -243,6 +248,7 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
             if "context" in build_opt:
                 shutil.copytree(build_opt["context"], str(modules_dir.joinpath(name)))
 
+            # convert build options from compose file to docker cli command
             buildOptions = []
             dockerfile = "Dockerfile"
             if "dockerfile" in build_opt:
@@ -285,7 +291,9 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
                     "contextPath": "./"
                 }
             }
+
             if build_opt:
+                # create module.json in module folder
                 module_json_path = modules_dir.joinpath(name).joinpath("module.json")
                 with open(str(module_json_path), "w", encoding="utf8") as fp:
                     fp.write(json.dumps(module_json_template, indent=4))
@@ -301,6 +309,7 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
 
 def template_to_manifest(input: str, output: str):
     def fillCreateOptions(target: dict, options: dict):
+        # current Edge runtime only support 4096B createOptions in 8 fields
         create_option_string = json.dumps(options)
         block_size = 512
         n = len(create_option_string)
@@ -337,6 +346,7 @@ def main():
     parser.add_argument("-r", "--registry", type=str, help="Container registry address", required=False)
     args = parser.parse_args()
     if not args.registry:
+        # set default registry
         args.registry = "localhost:5000"
     convert(args.type, args.input, args.output, args.registry)
 
