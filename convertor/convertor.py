@@ -216,13 +216,6 @@ def convert(convert_type: str, compose_file_name: str, output_path: str, cr: str
     modules = get_module_options(compose_file_name)
     template["modulesContent"]["$edgeAgent"]["properties.desired"]["modules"] = modules
 
-    # process extension fields
-    with open(compose_file_name, "r") as fp:
-        config = yaml.load(fp)
-        if "x-iotedge" in config and "routes" in config["x-iotedge"]:
-            template["modulesContent"]["$edgeHub"]["properties.desired"]["routes"] = config["x-iotedge"]["routes"]
-
-
     if convert_type == "file":
         # only create deployment manifest
         with open(str(output_path), "w") as fp:
