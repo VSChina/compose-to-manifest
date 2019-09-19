@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="iotedge-compose",
-    version="0.1.0",
+    version="0.1.1",
     author="iotedge",
     author_email="vsciet@outlook.com",
     description="Convert Docker Compose project to Azure IoT Edge deployment manifest",
