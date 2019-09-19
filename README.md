@@ -6,7 +6,7 @@ Convert Docker Compose project to Azure IoT Edge deployment manifest.
 2. Python version >= `3.6.0`.
 ## Installation
 ```bash
-pip3 install iotedge-compose
+pip install iotedge-compose
 ```
 
 
