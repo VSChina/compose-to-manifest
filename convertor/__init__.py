@@ -1,1 +1,1 @@
-name = "compose-to-manifest"
+name = "iotedge-compose"
