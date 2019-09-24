@@ -160,6 +160,7 @@ def get_module_options(compose_file_name: str, debug=False) -> dict:
         restart_policy = "always"
         try:
             restart_policy = create_options["HostConfig"]["RestartPolicy"]["Name"]
+            del create_options["HostConfig"]["RestartPolicy"]
             if restart_policy == "no":
                 restart_policy = "never"
         except KeyError:
