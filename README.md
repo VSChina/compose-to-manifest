@@ -18,7 +18,7 @@ iotedge-compose [-h] -t [file|project] -i docker_compose_file_path -o output_pat
 ## Examples
 1. Convert single file
     ```bash
-    iotedge-compose -t file -i example/flask-redis/docker-compose.yml -o example/flask-redis/deployment.template.json
+    iotedge-compose -t file -i example/flask-redis/docker-compose.yml -o example/flask-redis/deployment.json
     ```
 2. Convert project
     ```bash
